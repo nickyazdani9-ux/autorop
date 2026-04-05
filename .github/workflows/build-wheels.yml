@@ -8,20 +8,19 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
 
-      - name: Build wheel
-        uses: pypa/cibuildwheel@v2.21
-        env:
-          CIBW_ARCHS_LINUX: aarch64
-          CIBW_BUILD: "cp312-manylinux_*"
-        with:
-          package-dir: .
-          output-dir: wheelhouse
+      - name: Build in ARM64 container
+        run: |
+          docker run --rm --platform linux/arm64 \
+            -v ${{ github.workspace }}:/output \
+            python:3.13-slim bash -c "
+              apt-get update && apt-get install -y build-essential cmake git
+              pip install wheel setuptools
+              MAKEFLAGS='-j4' pip wheel z3-solver --no-deps -w /output/
+            "
 
-      - name: Upload wheel
-        uses: actions/upload-artifact@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: z3-aarch64-wheel
-          path: wheelhouse/*.whl
+          files: "*.whl"
+          tag_name: z3-aarch64-v1
