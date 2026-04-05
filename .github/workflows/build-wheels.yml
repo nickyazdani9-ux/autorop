@@ -26,32 +26,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: "*.whl"
-          tag_name: z3-alpine-aarch64-v1name: Build Z3 ARM64 wheel
-          
-          on: workflow_dispatch
-          
-          permissions:
-            contents: write
-          
-          jobs:
-            build:
-              runs-on: ubuntu-latest
-              steps:
-                - name: Set up QEMU
-                  uses: docker/setup-qemu-action@v3
-          
-                - name: Build in Alpine ARM64
-                  run: |
-                    docker run --rm --platform linux/arm64 \
-                      -v ${{ github.workspace }}:/output \
-                      python:3.12-alpine bash -c "
-                        apk add --no-cache build-base cmake git
-                        pip install wheel setuptools
-                        MAKEFLAGS='-j4' pip wheel z3-solver --no-deps -w /output/
-                      "
-          
-                - name: Release
-                  uses: softprops/action-gh-release@v2
-                  with:
-                    files: "*.whl"
-                    tag_name: z3-alpine-aarch64-v1
+          tag_name: z3-alpine-aarch64-v1
