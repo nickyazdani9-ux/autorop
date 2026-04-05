@@ -1,0 +1,27 @@
+name: Build Z3 ARM64 wheel
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Build wheel
+        uses: pypa/cibuildwheel@v2.21
+        env:
+          CIBW_ARCHS_LINUX: aarch64
+          CIBW_BUILD: "cp312-manylinux_*"
+        with:
+          package-dir: .
+          output-dir: wheelhouse
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: z3-aarch64-wheel
+          path: wheelhouse/*.whl
