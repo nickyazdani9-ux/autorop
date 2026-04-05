@@ -65,6 +65,9 @@ class Gadget:
         clobber_str = f" clobbers={self.clobbers}" if self.clobbers else ""
         return f"Gadget(0x{self.address:x}: {self.instructions}{clobber_str})"
 
+    def __format__(self, fmt: str) -> str:
+        return self.__repr__()
+
     def makes_progress(self, remaining: dict[str, int]) -> bool:
         """Does this gadget set at least one register we still need?"""
         return bool(set(self.sets.keys()) & set(remaining.keys()))
@@ -190,7 +193,11 @@ class Solver:
         try:
             result = self._rop.find_gadget(insns)
             if result:
-                return result[0] if isinstance(result, list) else result
+                if hasattr(result, 'address'):
+                    return result.address
+                if isinstance(result, int):
+                    return result
+                return int(result)
         except Exception:
             pass
         return None
