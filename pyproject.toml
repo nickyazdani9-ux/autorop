@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.build_meta"
+build-backend = "setuptools.backends._legacy:_Backend"
 
 [project]
 name = "autorop"
@@ -27,7 +27,6 @@ classifiers = [
 ]
 dependencies = [
     "pwntools>=4.11.0",
-    "z3-solver>=4.12.0",
 ]
 
 [project.urls]
@@ -35,6 +34,9 @@ Homepage = "https://github.com/nickyazdani9/autorop"
 Issues = "https://github.com/nickyazdani9/autorop/issues"
 
 [project.optional-dependencies]
+solver = [
+    "z3-solver>=4.12.0",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
